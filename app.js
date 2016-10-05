@@ -1,35 +1,63 @@
 require('dotenv').config();
 
-var express   =    require("express");
-var mysql     =    require('mysql');
-var app       =    express();
-
-var pool      =    mysql.createPool({
-    connectionLimit : 10, //important
-    host     : process.env.dbhost,
-    user     : process.env.dbuser,
-    password : process.env.dbpass,
-    database : "lt_stats",
-    debug    :  false
+var express = require("express");
+var mysql = require('mysql');
+var bodyParser = require('body-parser');
+var app = express();
+app.use( bodyParser.json() );
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(err, req, res, next) {
+    res.status(500).send("No s'ha pogut fer parsing dels request!");
 });
 
-app.post("/log/",function(req,res){-
-    pool.getConnection(function(err,connection){
+var pool = mysql.createPool({
+    connectionLimit: 10, //important
+    host: process.env.dbhost,
+    user: process.env.dbuser,
+    password: process.env.dbpass,
+    database: "lt_stats",
+    debug: false
+});
+
+var defLog = {
+    'type': 'unknown',
+    'rule': '',
+    'rule_id' : -1,
+    'incorrect_text' : '',
+    'incorrect_position' : -1,
+    'context' : '',
+    'suggestion' : '',
+    'suggestion_position': -1
+};
+
+var getLog = function(log) {
+    var $log = Object.assign(defLog, log);
+
+    return [$log.type, $log.rule_id, $log.rule, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position];
+}
+
+app.post("/log/", function (req, res) {
+
+    pool.getConnection(function (err, connection) {
         if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
+            res.json({"code": 100, "status": "Error in connection database"});
             return;
         }
 
-        connection.query(/* run the query */,function(err,rows){
-            connection.release();
-            if(!err) {
-                res.json({"code" : 200, "status": "log added"});
-            }
-        });
+        var $log = getLog(req.body);
 
-        connection.on('error', function(err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
+        var $query = 'insert into lt_stats(type, rule_id, rule, incorrect_text, incorrect_position, context, suggestion, suggestion_position) values(?,?,?,?,?,?,?,?)';
+
+        connection.query($query, $log , function (err, rows) {
+            console.log('query done!');
+            connection.release();
+            if (!err) {
+                console.log('success');
+                res.json({"code": 200, "status": "log added"});
+            } else {
+                console.log('error');
+                res.json({"code": 500, "status": "Error in database"});
+            }
         });
     });
 });
