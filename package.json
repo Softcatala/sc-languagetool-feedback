@@ -1,0 +1,19 @@
+{
+  "name": "sc-languagetool-stats",
+  "version": "0.0.1",
+  "description": "A simple app to log LanguageTool stats",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "mysql": "^2.11.1",
+    "dotenv": "^2.0.0"
+  },
+  "author": "Xavi Ivars<",
+  "contributors": [
+    "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
+  ],
+  "license": "GPL-3.0"
+}
