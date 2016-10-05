@@ -10,3 +10,6 @@ CREATE TABLE `lt_stats`.`lt_stats` (
   `suggestion_position` INT NULL,
   PRIMARY KEY (`id`));
 
+ALTER TABLE `lt_stats`.`lt_stats`
+ADD COLUMN `datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `suggestion_position`;
+
