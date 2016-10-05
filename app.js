@@ -36,6 +36,10 @@ var getLog = function(log) {
     return [$log.type, $log.rule_id, $log.rule, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position];
 }
 
+app.get('/format/', function (req, res) {
+    res.json(defLog);
+});
+
 app.get('/stats/', function (req, res) {
     pool.getConnection(function (err, connection) {
         if (err) {
@@ -48,7 +52,7 @@ app.get('/stats/', function (req, res) {
         connection.query($query, function (err, rows) {
 
             if (!err) {
-                res.json(Object.assign({"code": 200}, rows[0]));
+                res.json(Object.assign({}, {"code": 200}, rows[0]));
             } else {
                 res.json({"code": 500, "status": "Error in database"});
             }
