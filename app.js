@@ -36,6 +36,26 @@ var getLog = function(log) {
     return [$log.type, $log.rule_id, $log.rule, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position];
 }
 
+app.get('/stats/', function (req, res) {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            res.json({"code": 100, "status": "Error in connection database"});
+            return;
+        }
+
+        var $query = 'select count(*) as total from lt_stats';
+
+        connection.query($query, function (err, rows) {
+
+            if (!err) {
+                res.json(Object.assign({"code": 200}, rows[0]));
+            } else {
+                res.json({"code": 500, "status": "Error in database"});
+            }
+        });
+    });
+});
+
 app.post("/log/", function (req, res) {
 
     pool.getConnection(function (err, connection) {
@@ -49,13 +69,10 @@ app.post("/log/", function (req, res) {
         var $query = 'insert into lt_stats(type, rule_id, rule, incorrect_text, incorrect_position, context, suggestion, suggestion_position) values(?,?,?,?,?,?,?,?)';
 
         connection.query($query, $log , function (err, rows) {
-            console.log('query done!');
             connection.release();
             if (!err) {
-                console.log('success');
                 res.json({"code": 200, "status": "log added"});
             } else {
-                console.log('error');
                 res.json({"code": 500, "status": "Error in database"});
             }
         });
