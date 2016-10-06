@@ -3,7 +3,12 @@ require('dotenv').config();
 var express = require("express");
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
+var uuid = require('uuid');
+var uuidValidator = require('uuid-validate');
+var cookieParser = require('cookie-parser');
+
 var app = express();
+app.use(cookieParser());
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(err, req, res, next) {
@@ -30,10 +35,16 @@ var defLog = {
     'suggestion_position': -1
 };
 
-var getLog = function(log) {
+var getLog = function(log, cookies) {
     var $log = Object.assign(defLog, log);
 
-    return [$log.type, $log.rule_id, $log.rule, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position];
+    if (!cookies.correctorUuid) {
+        $log.correctorUuid = uuid.v4();
+    } else {
+        $log.correctorUuid = cookies.correctorUuid;
+    }
+
+    return [$log.type, $log.rule_id, $log.rule, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position, $log.correctorUuid];
 }
 
 app.get('/format/', function (req, res) {
@@ -68,9 +79,11 @@ app.post("/log/", function (req, res) {
             return;
         }
 
-        var $log = getLog(req.body);
+        var $log = getLog(req.body, req.cookies, res);
 
-        var $query = 'insert into lt_stats(type, rule_id, rule, incorrect_text, incorrect_position, context, suggestion, suggestion_position) values(?,?,?,?,?,?,?,?)';
+        res.cookie('correctorUuid', $log[8]);
+
+        var $query = 'insert into lt_stats(type, rule_id, rule, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
 
         connection.query($query, $log , function (err, rows) {
             connection.release();

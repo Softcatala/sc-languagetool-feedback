@@ -13,3 +13,10 @@ CREATE TABLE `lt_stats`.`lt_stats` (
 ALTER TABLE `lt_stats`.`lt_stats`
 ADD COLUMN `datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `suggestion_position`;
 
+ALTER TABLE `lt_stats`.`lt_stats`
+CHANGE COLUMN `rule` `rule_id` VARCHAR(45) NULL DEFAULT NULL ,
+CHANGE COLUMN `rule_id` `rule_sub_id` INT(11) NULL DEFAULT NULL ,
+ADD COLUMN `user_guid` VARCHAR(36) NULL AFTER `datetime`,
+ADD INDEX `rule` (`rule_id` ASC, `rule_sub_id` ASC),
+ADD INDEX `user` (`user_guid` ASC);
+

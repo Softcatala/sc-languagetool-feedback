@@ -7,14 +7,20 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "mysql": "^2.11.1",
-    "dotenv": "^2.0.0",
-    "body-parser": "^1.15.2"
+    "uuid": "^2.0.3",
+    "uuid-validate": "0.0.2"
   },
-  "author": "Xavi Ivars<",
-  "contributors": [
-    "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
-  ],
-  "license": "GPL-3.0"
+  "author": {
+    "email": "xavi.ivars@gmail.com",
+    "name": "Xavi Ivars"
+  },
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/softcatala/sc-languagetool-feedback/issues"
+  }
 }
