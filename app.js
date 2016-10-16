@@ -36,7 +36,7 @@ var defLog = {
 };
 
 var getLog = function(log, cookies) {
-    var $log = Object.assign(defLog, log);
+    var $log = Object.assign({}, defLog, log);
 
     if (!cookies.correctorUuid) {
         $log.correctorUuid = uuid.v4();
