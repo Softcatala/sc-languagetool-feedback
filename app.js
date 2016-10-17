@@ -26,8 +26,8 @@ var pool = mysql.createPool({
 
 var defLog = {
     'type': 'unknown',
-    'rule': '',
-    'rule_id' : -1,
+    'rule_id': '',
+    'rule_sub_id' : -1,
     'incorrect_text' : '',
     'incorrect_position' : -1,
     'context' : '',
@@ -35,8 +35,18 @@ var defLog = {
     'suggestion_position': -1
 };
 
+var sanitizeLog = function (log) {
+	if (!Number.isInteger(log.rule_sub_id) || log.rule_sub_id <= 0) {
+		log.rule_sub_id = -1;
+	}
+
+	return log;
+}
+
 var getLog = function(log, cookies) {
-    var $log = Object.assign({}, defLog, log);
+    var $log = Object.assign({"correctorUuid": ""}, defLog, log);
+
+    $log = sanitizeLog($log);
 
     if (!cookies.correctorUuid) {
         $log.correctorUuid = uuid.v4();
@@ -83,7 +93,7 @@ app.post("/log/", function (req, res) {
 
         res.cookie('correctorUuid', $log[8]);
 
-        var $query = 'insert into lt_stats(type, rule_id, rule, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
+        var $query = 'insert into lt_stats(type, rule_id, rule_sub_id, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
 
         connection.query($query, $log , function (err, rows) {
             connection.release();
