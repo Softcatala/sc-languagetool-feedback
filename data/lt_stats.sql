@@ -1,3 +1,5 @@
+drop table `lt_stats`;
+
 CREATE TABLE `lt_stats`.`lt_stats` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) DEFAULT NULL,

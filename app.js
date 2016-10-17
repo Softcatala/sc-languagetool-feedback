@@ -36,6 +36,12 @@ var defLog = {
 };
 
 var sanitizeLog = function (log) {
+
+    // old api
+    if (Number.isInteger(log.rule_id)) {
+        return false;
+    }
+
 	if (!Number.isInteger(log.rule_sub_id) || log.rule_sub_id <= 0) {
 		log.rule_sub_id = -1;
 	}
@@ -47,6 +53,10 @@ var getLog = function(log, cookies) {
     var $log = Object.assign({"correctorUuid": ""}, defLog, log);
 
     $log = sanitizeLog($log);
+
+    if (!$log) {
+        return false;
+    }
 
     if (!cookies.correctorUuid) {
         $log.correctorUuid = uuid.v4();
@@ -91,18 +101,22 @@ app.post("/log/", function (req, res) {
 
         var $log = getLog(req.body, req.cookies, res);
 
-        res.cookie('correctorUuid', $log[8]);
+        if (!$log) {
+            res.json({"code": 200, 'status': 'Not yet ready'});
+        } else {
+            res.cookie('correctorUuid', $log[8]);
 
-        var $query = 'insert into lt_stats(type, rule_id, rule_sub_id, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
+            var $query = 'insert into lt_stats(type, rule_id, rule_sub_id, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
 
-        connection.query($query, $log , function (err, rows) {
-            connection.release();
-            if (!err) {
-                res.json({"code": 200, "status": "log added"});
-            } else {
-                res.json({"code": 500, "status": "Error in database"});
-            }
-        });
+            connection.query($query, $log , function (err, rows) {
+                connection.release();
+                if (!err) {
+                    res.json({"code": 200, "status": "log added"});
+                } else {
+                    res.json({"code": 500, "status": "Error in database"});
+                }
+            });
+        }
     });
 });
 
