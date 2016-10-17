@@ -38,7 +38,7 @@ var defLog = {
 var sanitizeLog = function (log) {
 
     // old api
-    if (Number.isInteger(log.rule_id)) {
+    if (!isNaN(log.rule_id)) {
         return false;
     }
 
