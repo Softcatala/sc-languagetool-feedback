@@ -44,7 +44,7 @@ var sanitizeLog = function (log) {
 
     log.rule_sub_id = parseInt(log.rule_sub_id);
     if (!isNaN(log.rule_sub_id)) {
-        return false;
+        log.rule_sub_id = -1;
     }
 	
     return log;
