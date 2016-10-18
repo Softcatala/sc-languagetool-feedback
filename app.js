@@ -42,11 +42,12 @@ var sanitizeLog = function (log) {
         return false;
     }
 
-	if (!Number.isInteger(log.rule_sub_id) || log.rule_sub_id <= 0) {
-		log.rule_sub_id = -1;
-	}
-
-	return log;
+    log.rule_sub_id = parseInt(log.rule_sub_id);
+    if (!isNaN(log.rule_sub_id)) {
+        return false;
+    }
+	
+    return log;
 }
 
 var getLog = function(log, cookies) {
