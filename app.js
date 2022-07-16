@@ -22,25 +22,6 @@ var pool = mysql.createPool({
     debug: false
 });
 
-var run_query = function ($query, action) {
-
-    pool.getConnection(function (err, connection) {
-        if (err) {
-            console.log("Error in connection database - db create");
-            return;
-        }
-
-        connection.query($query, function (err, rows) {
-            connection.release();
-            if (!err) {
-                console.log("Cannot create " + action);
-            } else {
-                console.log("Created " + action);
-            }
-        });
-    });
-
-}
 
 console.log("Host:" + process.env.dbhost);
 console.log("User:" + process.env.dbuser);
