@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 var express = require("express");
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
@@ -23,6 +21,10 @@ var pool = mysql.createPool({
     database: "lt_stats",
     debug: false
 });
+
+console.log("Host:" + process.env.dbhost);
+console.log("User:" + process.env.dbuser);
+
 
 var defLog = {
     'type': 'unknown',
