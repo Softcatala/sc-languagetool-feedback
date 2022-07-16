@@ -15,7 +15,7 @@ mysql:
     - docker info
   stage: build
   script:
-    - docker build -f Dockerfile.mysql --cache-from $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME --tag $CI_REGISTRY_IMAGE/db:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/db:latest --tag $CI_REGISTRY_IMAGE-db:$CI_COMMIT_REF_NAME .
+    - docker build -f Dockerfile.mysql --cache-from $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME --tag $CI_REGISTRY_IMAGE/db:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/db:latest --tag $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME .
     - docker push $CI_REGISTRY_IMAGE/db:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE/db:latest
