@@ -22,6 +22,47 @@ var pool = mysql.createPool({
     debug: false
 });
 
+app.get("/create_db/", function (req, res) {
+  
+    var $query = `CREATE DATABASE IF NOT EXISTS lt_stats;`;
+
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            console.log("Error in connection database - db create");
+            return;
+        }
+
+        connection.query($query, function (err, rows) {
+            connection.release();
+            if (!err) {
+                console.log("database created");
+            } else {
+                console.log("Cannot create database");
+            }
+        });
+    });
+    
+      var $query = `CREATE TABLE IF NOT EXISTS lt_stats (id bigint(20) NOT NULL AUTO_INCREMENT, type varchar(45) DEFAULT NULL, rule_id varchar(45) DEFAULT NULL, rule_sub_id int(11) DEFAULT NULL, incorrect_text text, incorrect_position int(11) DEFAULT NULL, context text, suggestion text, suggestion_position int(11) DEFAULT NULL, datetime timestamp NULL DEFAULT CURRENT_TIMESTAMP, user_uuid varchar(36) DEFAULT NULL, PRIMARY KEY (id), KEY rule (rule_id,rule_sub_id), KEY user (user_uuid));`;
+    
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            console.log("Error in connection database - db create");
+            return;
+        }
+
+        connection.query($query, function (err, rows) {
+            connection.release();
+            if (!err) {
+                console.log("Table created");
+            } else {
+                console.log("Cannot create table");
+            }
+        });
+    });
+    
+    res.json({"code":200, "status": "DB created"});
+});
+
 console.log("Host:" + process.env.dbhost);
 console.log("User:" + process.env.dbuser);
 
