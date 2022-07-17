@@ -1,0 +1,38 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+
+stages:
+  - build
+  - mysql
+
+mysql:
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker info
+  stage: build
+  script:
+    - docker build -f Dockerfile.mysql --cache-from $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME --tag $CI_REGISTRY_IMAGE/db:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/db:latest --tag $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME .
+    - docker push $CI_REGISTRY_IMAGE/db:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/db:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE/db:latest
+  when:
+    manual
+
+
+build:
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker info
+  stage: build
+  script:
+    - docker build -f Dockerfile --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME 
+
