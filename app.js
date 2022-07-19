@@ -4,15 +4,11 @@ var bodyParser = require('body-parser');
 var uuid = require('uuid');
 var uuidValidator = require('uuid-validate');
 var cookieParser = require('cookie-parser');
-const cors = require(‘cors’);
+const cors = require("cors");
 
 
 const corsOptions = {
-    "allowedHeaders": ['Content-Type'],
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
+    allowedHeaders: ['Content-Type']
 }
 
 var app = express();
