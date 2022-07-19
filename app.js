@@ -4,8 +4,11 @@ var bodyParser = require('body-parser');
 var uuid = require('uuid');
 var uuidValidator = require('uuid-validate');
 var cookieParser = require('cookie-parser');
+const cors = require(‘cors’);
+
 
 var app = express();
+app.use(cors());
 app.use(cookieParser());
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true }));
