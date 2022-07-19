@@ -8,7 +8,11 @@ const cors = require(‘cors’);
 
 
 const corsOptions = {
-    allowedHeaders: ['Content-Type']
+    "allowedHeaders": ['Content-Type'],
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
 }
 
 var app = express();
