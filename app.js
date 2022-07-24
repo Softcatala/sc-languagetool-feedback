@@ -8,7 +8,8 @@ const cors = require("cors");
 
 
 const corsOptions = {
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type'],
+    credentials: true
 }
 
 var app = express();
