@@ -115,7 +115,9 @@ app.post("/log/", function (req, res) {
                 return;
             }
 
-            res.cookie('correctorUuid', $log[8]);
+            res.cookie('correctorUuid', $log[8], {
+                domain: '.softcatala.org',
+            });
 
             var $query = 'insert into lt_stats(type, rule_id, rule_sub_id, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
 
