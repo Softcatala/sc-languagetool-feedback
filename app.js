@@ -7,9 +7,17 @@ var cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 
+const origins = ["softcatala.local", "www.softcatala.org", "web2015.softcatala.org", "api.softcatala.org"]
 const corsOptions = {
     allowedHeaders: ['Content-Type'],
-    credentials: true
+    credentials: true,
+    origin: function (origin, callback) {
+        if (origins.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
 }
 
 var app = express();
