@@ -1,9 +1,6 @@
 var express = require("express");
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
-var uuid = require('uuid');
-var uuidValidator = require('uuid-validate');
-var cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 
@@ -21,10 +18,10 @@ const corsOptions = {
 
 var app = express();
 app.use(cors(corsOptions));
-app.use(cookieParser());
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(err, req, res, next) {
+    console.log(err)
     res.status(500).send("No s'ha pogut fer parsing dels request!");
 });
 
@@ -68,8 +65,8 @@ var sanitizeLog = function (log) {
     return log;
 }
 
-var getLog = function(log, cookies) {
-    var $log = Object.assign({"correctorUuid": ""}, defLog, log);
+var getLog = function(log) {
+    var $log = Object.assign(defLog, log);
 
     $log = sanitizeLog($log);
 
@@ -77,13 +74,7 @@ var getLog = function(log, cookies) {
         return false;
     }
 
-    if (!cookies.correctorUuid) {
-        $log.correctorUuid = uuid.v4();
-    } else {
-        $log.correctorUuid = cookies.correctorUuid;
-    }
-
-    return [$log.type, $log.rule_id, $log.rule_sub_id, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position, $log.correctorUuid];
+    return [$log.type, $log.rule_id, $log.rule_sub_id, $log.incorrect_text, $log.incorrect_position, $log.context, $log.suggestion, $log.suggestion_position, $log.user_uuid];
 }
 
 app.get('/format/', function (req, res) {
@@ -112,7 +103,7 @@ app.get('/stats/', function (req, res) {
 
 app.post("/log/", function (req, res) {
 
-    var $log = getLog(req.body, req.cookies, res);
+    var $log = getLog(req.body, res);
 
     if (!$log) {
         res.json({"code": 200, 'status': 'Not yet ready'});
@@ -122,12 +113,6 @@ app.post("/log/", function (req, res) {
                 res.json({"code": 100, "status": "Error in connection database"});
                 return;
             }
-
-            res.cookie('correctorUuid', $log[8], {
-                domain: '.softcatala.org',
-                secure: true,
-                sameSite: "none"
-            });
 
             var $query = 'insert into lt_stats(type, rule_id, rule_sub_id, incorrect_text, incorrect_position, context, suggestion, suggestion_position, user_uuid) values(?,?,?,?,?,?,?,?,?)';
 
