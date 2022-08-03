@@ -67,7 +67,7 @@ var sanitizeLog = function (log) {
 }
 
 var getLog = function(log) {
-    var $log = Object.assign(defLog, log);
+    var $log = Object.assign({}, defLog, log);
 
     $log = sanitizeLog($log);
 
