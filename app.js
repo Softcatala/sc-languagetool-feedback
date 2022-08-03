@@ -47,7 +47,8 @@ var defLog = {
     'incorrect_position' : -1,
     'context' : '',
     'suggestion' : '',
-    'suggestion_position': -1
+    'suggestion_position': -1,
+    'user_uuid' : ''
 };
 
 var sanitizeLog = function (log) {
