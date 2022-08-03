@@ -17,7 +17,6 @@ const corsOptions = {
 }
 
 var app = express();
-app.use(cors(corsOptions));
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(err, req, res, next) {
@@ -102,7 +101,7 @@ app.get('/stats/', function (req, res) {
     });
 });
 
-app.post("/log/", function (req, res) {
+app.post("/log/", cors(corsOptions), function (req, res) {
 
     var $log = getLog(req.body, res);
 
