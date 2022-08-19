@@ -8,7 +8,7 @@ const corsOptions = {
     allowedHeaders: ['Content-Type'],
     credentials: true,
     origin: function (origin, callback) {
-        if (origin.includes("softcatala.") !== -1) {
+        if (!!origin && origin.includes("softcatala.") !== -1) {
             callback(null, true)
         } else {
             callback(new Error('Not allowed by CORS'))
