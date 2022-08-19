@@ -101,6 +101,7 @@ app.get('/stats/', function (req, res) {
     });
 });
 
+app.options("/log/", cors(corsOptions))
 app.post("/log/", cors(corsOptions), function (req, res) {
 
     var $log = getLog(req.body, res);
